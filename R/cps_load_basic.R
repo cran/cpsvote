@@ -6,17 +6,18 @@
 #' package data object (which would have been over 10 MB). This function will 
 #' take you from nothing to having some basic CPS data in your environment, with 
 #' the option to save this data locally for future ease. A sample of the data
-#' that comes out of this function is provided as `cpsvote::cps_allyears_10k`.
+#' that comes out of this function is provided as `cpsvote::cps_allyears_100k`.
 #' 
 #' @param years Which years should be read
-#' @param datadir The location where the CPS zip files live (or should be 
-#' downloaded to)
+#' @param datadir The location where the CPS zip files live (or should be
+#' downloaded to). Defaults to [cps_data_dir()], which returns `~/cps_data`
+#' unless overridden via `options(cpsvote.datadir = "your/path")`.
 #' @param outdir The location where the final data file should be saved to
-#' @examples \dontrun{cps_load-basic(years = 2016, outdir = "data")}
-#' 
+#' @examples \dontrun{cps_load_basic(years = 2016, outdir = "data")}
+#'
 #' @export
-cps_load_basic <- function(years = seq(1994, 2018, 2),
-                           datadir = "cps_data",
+cps_load_basic <- function(years = seq(1994, 2024, 2),
+                           datadir = cps_data_dir(),
                            outdir = NULL) {
   output <- cps_read(dir = datadir, years = years) %>%
     cps_label() %>%
@@ -25,7 +26,9 @@ cps_load_basic <- function(years = seq(1994, 2018, 2),
     cps_reweight_turnout()
   
   if(!is.null(outdir)) {
-    saveRDS(output, file = file.path(outdir, "cps_basic.rds"))
+    # saveRDS(output, file = file.path(outdir, "cps_basic.rds"))
+    default_name <- sprintf("cps_basic_%d_%d.rds", min(years), max(years)) # added in so no overwrite. 
+    saveRDS(output, file = file.path(outdir, default_name))
   }
   
   output

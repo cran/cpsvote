@@ -60,6 +60,7 @@ cps_refactor <- function(data, move_levels = TRUE) {
                                           "SCHEDULE PROBLEMS" = c("COULD NOT TAKE TIME OFF FROM WORK/SCHOOL/TOO BUSY",
                                                                   "TOO BUSY, CONFLICTING WORK OR SCHOOL SCHEDULE"),
                                           "OUT OF TOWN" = c("OUT OF TOWN OR AWAY FROM HOME"),
+                                          "COVID-19 CONCERNS" = c("CONCERNS ABOUT THE CORONAVIRUS (COVID-19) PANDEMIC"),
                                           "SICK, DISABLED, OR FAMILY EMERGENCY" = c("SICK, DISABLED, OR FAMILY EMERGENCY",
                                                                                     "ILLNESS OR DISABILITY (OWN OR FAMILY'S)"),
                                           "DID NOT LIKE CANDIDATES OR ISSUES" = c("DID NOT PREFER ANY OF THE CANDIDATES",
@@ -181,6 +182,7 @@ cps_recode_vote <- function(data,
                     hurachen_turnout = forcats::fct_other(.data[[vote_col]], keep = c("YES", "NO")) %>% # send everything that's not Y/N to "Other"
                       forcats::fct_expand("Other") %>% # if there are no Others, add the level (to avoid warning in  next step)
                       forcats::fct_collapse(NULL = "Other") # drop all Other
+
       ))
   }
   

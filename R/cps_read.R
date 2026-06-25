@@ -64,9 +64,10 @@ cps_read_year <- function(file,
   
   # unzip bc 2018 breaks unless first unzipped
   # also this is loads faster than unzipping within read_fwf
-  if(tools::file_ext(file) %in% c('gz', 'zip')) {
+  if(tools::file_ext(file) %in% c('zip')) {
     old_file <- file
     temp <- tempfile()
+    on.exit(unlink(temp, recursive = TRUE), add = TRUE) # added in at advice of Zayne 
     utils::unzip(file, exdir = temp)
     file <- list.files(temp, full.names = TRUE)
   }
@@ -86,7 +87,8 @@ cps_read_year <- function(file,
   
   # if unzipped, drop the temp file
   if(exists("old_file")) {
-    rm(temp)
+    #rm(temp)
+    unlink(temp, recursive = TRUE)
   }
   
   # print status
@@ -105,9 +107,11 @@ cps_read_year <- function(file,
 #' 
 #' @param years Which years to read in. Thie function will read data from files 
 #' in `dir` whose names contain these 4-digit years.
-#' @param dir The folder where the CPS data files live. These files should  
-#' follow a naming scheme that contains the 4-digit year of the results in 
-#' question, and have a ".zip" or ".gz" extension.
+#' @param dir The folder where the CPS data files live. These files should
+#' follow a naming scheme that contains the 4-digit year of the results in
+#' question, and have a ".zip" or ".gz" extension. Defaults to [cps_data_dir()],
+#' which returns `~/cps_data` unless overridden via
+#' `options(cpsvote.datadir = "your/path")`.
 #' @param cols Which columns to read. This must be a data frame, with required 
 #' columns `start_pos`,`end_pos`, and `year`. The default value is `cps_cols`, 
 #' which reads from the list `cpsvote::cps_cols`. See `vignette("add-variables")` 
@@ -120,8 +124,8 @@ cps_read_year <- function(file,
 #' @examples \dontrun{cps_read(years = 2016, names_col = "new_name")}
 #' 
 #' @export
-cps_read <- function(years = seq(1994, 2018, 2),
-                     dir = "cps_data",
+cps_read <- function(years = seq(1994, 2024, 2),
+                     dir = cps_data_dir(),
                      cols = cpsvote::cps_cols,
                      names_col = "new_name",
                      join_dfs = TRUE) {
@@ -144,24 +148,24 @@ cps_read <- function(years = seq(1994, 2018, 2),
     years <- years[years >= 1994]
   }
   
-  # years must be before 2020
-  if (any(years > 2018)) {
-    warning(paste0("The Census Bureau has not yet released CPS data for years after 2018. The remaining years listed (",
-                   paste(years[years <= 2018], collapse = ", "),
+  # years must be before 2024
+  if (any(years > 2024)) {
+    warning(paste0("The Census Bureau has not yet released CPS data for years after 2024. The remaining years listed (",
+                   paste(years[years <= 2024], collapse = ", "),
                    ") will be loaded."),
             immediate. = T)
-    years <- years[years <= 2018]
+    years <- years[years <= 2024]
   }
   
   # years must be in survey coverage zone
-  if (!all(years %in% seq(1964, 2018, 2))) {
+  if (!all(years %in% seq(1964, 2024, 2))) {
     warning(paste0("The VRS was not conducted in the following years: ",
-                   paste(years[!(years %in% seq(1964, 2018, 2))], collapse = ", "),
+                   paste(years[!(years %in% seq(1964, 2024, 2))], collapse = ", "),
                    ". The remaining years listed (",
-                   paste(years[years %in% seq(1964, 2018, 2)], collapse = ", "),
+                   paste(years[years %in% seq(1964, 2024, 2)], collapse = ", "),
                    ") will be loaded."),
             immediate. = T)
-    years <- years[years %in% seq(1964, 2018, 2)]
+    years <- years[years %in% seq(1964, 2024, 2)]
   }
   
   # if they're all gone, stop

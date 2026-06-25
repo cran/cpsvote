@@ -1,4 +1,4 @@
-## ---- include = FALSE, echo = FALSE-------------------------------------------
+## ----include = FALSE, echo = FALSE--------------------------------------------
 options(rmarkdown.html_vignette.check_title = FALSE)
 NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 knitr::opts_chunk$set(
@@ -10,4 +10,5 @@ knitr::opts_chunk$set(
   eval = NOT_CRAN
 )
 library(knitr)
+library(cpsvote)
 

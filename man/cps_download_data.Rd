@@ -5,16 +5,18 @@
 \title{Download CPS microdata}
 \usage{
 cps_download_data(
-  path = "cps_data",
-  years = seq(1994, 2018, 2),
+  path = cps_data_dir(),
+  years = seq(1994, 2024, 2),
   overwrite = FALSE
 )
 }
 \arguments{
-\item{path}{A file path (relative or absolute) where the downloads should go.}
+\item{path}{A file path (relative or absolute) where the downloads should go.
+Defaults to \code{\link[=cps_data_dir]{cps_data_dir()}}, which returns \verb{~/cps_data} unless overridden
+via \code{options(cpsvote.datadir = "your/path")}.}
 
 \item{years}{Which years of data to download. Defaults to all
-even-numbered years from 1994 to 2018.}
+even-numbered years from 1994 to 2024.}
 
 \item{overwrite}{Logical, whether to write over existing files or not.
 Defaults to FALSE.}
@@ -24,7 +26,7 @@ Download CPS microdata
 }
 \details{
 \itemize{
-\item File names will be written in the style "cps_nov2018.zip", with the
+\item File names will be written in the style "cps_nov2024.zip", with the
 appropriate years.
 \item The Voting and Registration Supplement is only conducted in even-numbered
 years (since 1964), so any entry in \code{years} outside of this will be skipped.
@@ -34,7 +36,7 @@ entry in \code{years} before 1994 will be skipped.
 }
 \examples{
 \dontrun{
-cps_download_data(path = "cps_docs", years = 2016, overwrite = TRUE)
+cps_download_data(years = 2016, overwrite = TRUE)
 }
 
 }
